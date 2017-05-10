@@ -2,11 +2,13 @@ const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 3000; // default port 8080
 const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser"); 
 
 app.set("view engine", "ejs");
 
 //Middlewares
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(cookieParser());
 
 function makeid(){
     var text = "";
@@ -34,18 +36,24 @@ app.get("/urls.json", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
-    let templateVars = {urls: urlDatabase};
+    let templateVars = {
+        urls: urlDatabase,
+        username: req.cookies["username"]};
     res.render('urls_index', templateVars);
 });
 
 app.get('/urls/new', (req, res) => {
-  res.render('urls_new');
+  let templateVars = {
+    urls: urlDatabase,
+    username: req.cookies["username"]};
+  res.render('urls_new', templateVars);
 });
 
 app.get("/urls/:id", (req, res) => {
   let templateVars = { 
       shortURL: req.params.id,
-      urls: urlDatabase };
+      urls: urlDatabase,
+      username: req.cookies["username"] };
   res.render("urls_show", templateVars);
 });
 
@@ -73,6 +81,18 @@ app.post("/urls/:id/delete", (req, res) => {
   delete urlDatabase[req.params.id]; 
   //console.log(urlDatabase);
   res.redirect('/urls');
+});
+
+app.post("/login", (req, res) => {
+    console.log(req);
+    let cookieValue = req.body.username;
+    res.cookie('username', req.body.username);
+    res.redirect('/urls');
+});
+
+app.post("/logout", (req, res) => {
+    res.clearCookie("username"); 
+    res.redirect("/urls"); 
 });
 
 app.listen(PORT, () => {

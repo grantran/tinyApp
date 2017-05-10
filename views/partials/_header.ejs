@@ -2,7 +2,15 @@
 	<div class="container-fluid">
 
 		<div class="navbar-header">
-			<a class="navbar-brand" href="#">login</a>
+      <% if (username) { %>
+        <%= username %>
+        <form method="POST" action="/logout">
+        <input type="submit" value="LOGOUT"></form>
+      <% } else { %> 
+			  <form method="POST" action="/login">
+                    username: <input type="text" name="username">
+                    <input type="submit" value="LOGIN"></form>
+      <% } %>              
 		</div>
 
 		<ul class="nav navbar-nav">
