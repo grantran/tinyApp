@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include partials/_header %>
+</head>
+
+<body>
+    <main> 
+        <div> 
+            <h1>List of URLs</h1>
+                <ul> 
+                    <% for (var keys in urls) { %>
+                        <li><%= keys %> - <%= urls[keys] %></li>
+                    <% }; %> 
+                </ul>
+                <a href=""> Shorterning a new URL</a>
+        </div>
+    </main> 
+</body>
+</html>
