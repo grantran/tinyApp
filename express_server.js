@@ -1,9 +1,11 @@
 const express = require('express'); 
 const app = express();
-const PORT = process.env.PORT || 8080; // default port 8080
+const PORT = process.env.PORT || 3000; // default port 8080
 const bodyParser = require("body-parser");
 
 app.set("view engine", "ejs");
+
+//Middlewares
 app.use(bodyParser.urlencoded({extended: true}));
 
 function makeid(){
@@ -22,6 +24,10 @@ let urlDatabase = {
 app.get("/", (req, res) => {
     res.end('Hello!'); 
 }); 
+
+app.get("/hello", (req, res) => {
+  res.end("<html><body>Hello <b>World</b></body></html>\n");
+});
 
 app.get("/urls.json", (req, res) => {
     res.json(urlDatabase);
@@ -43,21 +49,22 @@ app.get("/urls/:id", (req, res) => {
   res.render("urls_show", templateVars);
 });
 
-app.get("/hello", (req, res) => {
-  res.end("<html><body>Hello <b>World</b></body></html>\n");
-});
-
 app.post("/urls", (req, res) => {
   let randomS = makeid();
   urlDatabase[randomS] = req.body.longURL; 
-  res.send("Okay");
+  //console.log(urlDatabase);
+  res.redirect('/urls');
 });
 
 app.get("/u/:shortURL", (req, res) => {
   let longURL = urlDatabase[req.params.shortURL];
-//   console.log(req.params.shortURL);
-//   console.log(longURL);
   res.redirect(longURL);
+});
+
+app.post("/urls/:id/delete", (req, res) => {
+  delete urlDatabase[req.params.id]; 
+  //console.log(urlDatabase);
+  res.redirect('/urls');
 });
 
 app.listen(PORT, () => {
