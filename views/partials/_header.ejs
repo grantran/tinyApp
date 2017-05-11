@@ -1,21 +1,15 @@
 <nav class="navbar navbar-default" role="navigation">
 	<div class="container-fluid">
-
 		<div class="navbar-header">
 			<% if (username) { %>
         <%=  username %>
         <form method="POST" action="/logout">
         <input type="submit" value="LOGOUT"></form>
       <% } else { %> 
-			  <form method="POST" action="/login">
-                    email: <input type="text" name="user_id">
-                    <input type="submit" value="LOGIN"></form>
+					<a href="http://localhost:3000/login">Login</a>
+					<a href="http://localhost:3000/user/register">Register</a>
       <% } %>              
 		</div>
-
-		<ul class="nav navbar-nav">
-			<li><a href="http://localhost:8080/urls">URL List</a></li>
-		</ul>
 	  
 	</div>
 </nav>

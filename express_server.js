@@ -28,6 +28,11 @@ let users = {
     id: "user2RandomID", 
     email: "user2@example.com", 
     password: "dishwasher-funk"
+  }, 
+  "test": {
+      id: "testID", 
+      email: "asdf@asdf", 
+      password: "asdf"
   }
 }
 
@@ -83,6 +88,15 @@ app.get("/u/:shortURL", (req, res) => {
   res.redirect(longURL);
 });
 
+app.get("/login", (req, res) => {
+    let templateVars = { 
+        shortURL: req.params.id,
+        urls: urlDatabase,
+        username: req.cookies["user_id"],
+        user: users };
+    res.render('login', templateVars)
+});
+
 app.post("/urls/:shortURL/update", (req, res) => {
     urlDatabase[req.params.shortURL] = req.body.newURL;
     console.log(urlDatabase);    
@@ -95,10 +109,17 @@ app.post("/urls/:id/delete", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-    console.log('this is req', req);
-    let cookieValue = req.body.user_id;
-    res.cookie('user_id', req.body.user_id);
-    res.redirect('/urls');
+    console.log('this is req', req.body);
+    for (const keys in users) {
+        if (req.body.email === users[keys].email &&
+            req.body.password === users[keys].password) {
+            res.cookie('user_id', users[keys].id);
+            res.redirect('/urls');
+        } else {
+            console.log('no'); 
+        }
+    }
+    res.send('no'); 
 });
 
 app.post("/logout", (req, res) => {
