@@ -2,20 +2,19 @@
 	<div class="container-fluid">
 
 		<div class="navbar-header">
-      <% if (username) { %>
-        <%= username %>
+			<% if (username) { %>
+        <%=  username %>
         <form method="POST" action="/logout">
         <input type="submit" value="LOGOUT"></form>
       <% } else { %> 
 			  <form method="POST" action="/login">
-                    username: <input type="text" name="username">
+                    email: <input type="text" name="user_id">
                     <input type="submit" value="LOGIN"></form>
       <% } %>              
 		</div>
 
 		<ul class="nav navbar-nav">
 			<li><a href="http://localhost:8080/urls">URL List</a></li>
-			<li><a href="/about">About</a></li>
 		</ul>
 	  
 	</div>
