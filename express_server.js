@@ -1,6 +1,6 @@
 const express = require('express'); 
 const app = express();
-const PORT = process.env.PORT || 3000; // default port 8080
+const PORT = process.env.PORT || 8080; // default port 8080
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const cookieSession = require('cookie-session');  
@@ -117,13 +117,16 @@ app.get("/urls/:id", (req, res) => {
 
 });
 
-app.get("/user/register", (req, res) => {
+app.get("/register", (req, res) => {
     let templateVars = { 
-        shortURL: req.params.id,
         urls: urlDatabase,
         username: req.session.user_id,
         user: users };
-    res.render('register', templateVars);
+    if (templateVars.username) {
+        res.redirect('/');
+    } else {
+        res.render('register', templateVars);
+    }
 });
 
 app.post("/urls", (req, res) => {
@@ -153,11 +156,14 @@ app.get("/u/:shortURL", (req, res) => {
 
 app.get("/login", (req, res) => {
     let templateVars = { 
-        shortURL: req.params.id,
         urls: urlDatabase,
         username: req.session.user_id,
         user: users };
-    res.render('login', templateVars)
+    if (templateVars.username) {
+        res.redirect('/');
+    } else {
+        res.render('login', templateVars);
+    }
 });
 
 app.post("/urls/:shortURL/update", (req, res) => {
@@ -193,7 +199,7 @@ app.post("/logout", (req, res) => {
     res.redirect("/urls"); 
 });
 
-app.post("/user/register", (req, res) => {
+app.post("/register", (req, res) => {
     if (!req.body.email || !req.body.password) {
         console.log('empty string');
         res.status(400);
