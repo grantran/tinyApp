@@ -104,13 +104,21 @@ app.post("/urls", (req, res) => {
     let newLongURL = req.body.longURL;
     urlDatabase[userEntry] = {id: userEntry, shortURL: randomS, 
         longURL: newLongURL };
-    console.log(urlDatabase);
+    //console.log(urlDatabase);
     res.redirect('/urls');
 });
 
 app.get("/u/:shortURL", (req, res) => {
-  let longURL = urlDatabase[req.params.shortURL];
-  res.redirect(longURL);
+    // console.log(req.params.shortURL);
+    // console.log(urlDatabase[req.cookies.user_id].shortURL);
+    let realURL = ""; 
+    for (const keys in urlDatabase) {
+        // console.log(keys);
+        if (req.params.shortURL === urlDatabase[keys].shortURL) {
+                realURL = urlDatabase[keys].longURL;
+                res.redirect(realURL); 
+            }
+    }
 });
 
 app.get("/login", (req, res) => {

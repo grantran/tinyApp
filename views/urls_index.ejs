@@ -10,7 +10,7 @@
             <ul> 
                 <% for (const keys in userUrls) { %>
                     <!--if (username === keys) { %>-->
-                    <li><%= keys %> - <%= userUrls[keys] %>
+                    <li><%= userUrls[keys].shortURL %> - <%= userUrls[keys].longURL %>
                     <form method="POST" action="/urls/<%= keys %>/delete">
                     <input type="submit" value="DELETE"></form>
                     <form  action="/urls/<%= keys %>">
