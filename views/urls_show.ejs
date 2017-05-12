@@ -8,7 +8,7 @@
         <div> 
             <h1>This is urls_show</h1>
                 <ul> 
-                    <%= urls[shortURL] %>
+                    <%= urls[username].longURL %> ---
                     <%= shortURL %>
                     <form method="POST" action="/urls/<%= shortURL %>/update">
                     New URL: <input type="text" name="newURL">

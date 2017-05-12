@@ -2,7 +2,7 @@
 	<div class="container-fluid">
 		<div class="navbar-header">
 			<% if (username) { %>
-        <%=  username %>
+        <%=  user[username].email %>
         <form method="POST" action="/logout">
         <input type="submit" value="LOGOUT"></form>
       <% } else { %> 

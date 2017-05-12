@@ -34,21 +34,21 @@ var urlsForUser = function urlsForUser(cookieinfo){
 }
 
 let users = { 
-  "userRandomID": {
-    id: "userRandomID", 
-    email: "user@example.com", 
-    password: "purple-monkey-dinosaur"
-  },
- "user2RandomID": {
-    id: "user2RandomID", 
-    email: "user2@example.com", 
-    password: "dishwasher-funk"
-  }, 
-  "test": {
-      id: "testID", 
-      email: "asdf@asdf", 
-      password: "asdf"
-  }
+//   "userRandomID": {
+//     id: "userRandomID", 
+//     email: "user@example.com", 
+//     password: "purple-monkey-dinosaur"
+//   },
+//  "user2RandomID": {
+//     id: "user2RandomID", 
+//     email: "user2@example.com", 
+//     password: "dishwasher-funk"
+//   }, 
+//   "test": {
+//       id: "testID", 
+//       email: "asdf@asdf", 
+//       password: "asdf"
+//   }
 }
 
 let urlDatabase = {
@@ -61,6 +61,18 @@ let urlDatabase = {
         shortURL: "9sm5xK",
         longURL: "http://www.google.com" }
 };
+
+app.get('/', (req, res) => {
+    let templateVars = {
+        urls: urlDatabase,
+        username: req.session.user_id,
+        user: users};
+    if (templateVars.username) {
+        res.redirect('/urls');
+    } else {
+        res.redirect('/login');
+    }
+});
 
 app.get("/urls", (req, res) => {
     let templateVars = {
@@ -104,8 +116,8 @@ app.get("/user/register", (req, res) => {
 
 app.post("/urls", (req, res) => {
     let randomS = makeid();
-    let userEntry = req.cookies.user_id;
-    let newLongURL = req.body.longURL;
+    let userEntry = req.session.user_id;
+    let newLongURL = "http://" + req.body.longURL;
     urlDatabase[userEntry] = {id: userEntry, shortURL: randomS, 
         longURL: newLongURL };
     //console.log(urlDatabase);
@@ -135,7 +147,8 @@ app.get("/login", (req, res) => {
 });
 
 app.post("/urls/:shortURL/update", (req, res) => {
-    urlDatabase[req.cookies.user_id].longURL = req.body.newURL;
+    let username = req.session.user_id;
+    urlDatabase[username].longURL = req.body.newURL;
     res.redirect('/urls');
 })
 

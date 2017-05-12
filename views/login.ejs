@@ -1,4 +1,11 @@
-<div class="navbar-header">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <% include partials/_header %>
+</head>
+<body>
+<main>
+  <div class="navbar-header">
 			<% if (username) { %>
         <%=  user.users.id %>
         <form method="POST" action="/logout">
@@ -9,4 +16,6 @@
                     password: <input type="password" name= "password">
                     <input type="submit" value="LOGIN"></form>
       <% } %>              
-		</div>
+	</div>
+</main>
+</body>
