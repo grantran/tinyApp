@@ -37,8 +37,14 @@ let users = {
 }
 
 let urlDatabase = {
-    "b2xVn2": "http://www.lighthouselabs.ca",
-    "9sm5xK": "http://www.google.com"
+    "testID": {
+        id: "testID",
+        shortURL: "b2xVn2", 
+        longURL: "http://www.lighthouselabs.ca"},
+    "userRandomID": {
+        id: "userRandomID", 
+        shortURL: "9sm5xK",
+        longURL: "http://www.google.com" }
 };
 
 app.get("/urls", (req, res) => {
@@ -52,11 +58,15 @@ app.get("/urls", (req, res) => {
 });
 
 app.get('/urls/new', (req, res) => {
-  let templateVars = {
-    urls: urlDatabase,
-    username: req.cookies["user_id"],
-    user: users};
-  res.render('urls_new', templateVars);
+    let templateVars = {
+        urls: urlDatabase,
+        username: req.cookies["user_id"],
+        user: users};
+    if (templateVars.username) {
+        res.render('urls_new', templateVars);
+    } else {
+        res.redirect('/login');
+    }
 });
 
 app.get("/urls/:id", (req, res) => {
@@ -78,9 +88,13 @@ app.get("/user/register", (req, res) => {
 });
 
 app.post("/urls", (req, res) => {
-  let randomS = makeid();
-  urlDatabase[randomS] = req.body.longURL; 
-  res.redirect('/urls');
+    let randomS = makeid();
+    let userEntry = req.cookies.user_id;
+    let newLongURL = req.body.longURL;
+    urlDatabase[userEntry] = {id: userEntry, shortURL: randomS, 
+        longURL: newLongURL };
+    console.log(urlDatabase);
+    res.redirect('/urls');
 });
 
 app.get("/u/:shortURL", (req, res) => {
@@ -98,8 +112,7 @@ app.get("/login", (req, res) => {
 });
 
 app.post("/urls/:shortURL/update", (req, res) => {
-    urlDatabase[req.params.shortURL] = req.body.newURL;
-    console.log(urlDatabase);    
+    urlDatabase[req.cookies.user_id].longURL = req.body.newURL;
     res.redirect('/urls');
 })
 
