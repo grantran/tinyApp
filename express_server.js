@@ -102,7 +102,6 @@ app.get("/urls/:id", (req, res) => {
         user: users };
     let short;
     console.log(req.params.id); 
-    // console.log(req);
     for (keys in urlDatabase) {
         if (urlDatabase[keys].shortURL === req.params.id &&
         keys === templateVars.username) {
@@ -111,9 +110,8 @@ app.get("/urls/:id", (req, res) => {
             res.send('This URL does not belong to you');
         } 
     }
-
     res.send('Not a valid short URL');
-    // res.render("urls_show", templateVars);
+
 
 });
 
@@ -135,22 +133,17 @@ app.post("/urls", (req, res) => {
     let newLongURL = "http://" + req.body.longURL;
     urlDatabase[userEntry] = {id: userEntry, shortURL: randomS, 
         longURL: newLongURL };
-    console.log(urlDatabase);
     res.redirect('/urls');
 });
 
 app.get("/u/:shortURL", (req, res) => {
-    // console.log(req.params.shortURL);
-    // console.log(urlDatabase[req.cookies.user_id].shortURL);
     let realURL = ""; 
     for (const keys in urlDatabase) {
-        // console.log(keys);
         if (req.params.shortURL === urlDatabase[keys].shortURL) {
                 realURL = urlDatabase[keys].longURL;
                 res.redirect(realURL); 
         }
     }
-
     res.send('Not a valid shortURL');
 });
 
@@ -180,18 +173,14 @@ app.post("/urls/:id/delete", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-    console.log('this is req', req.body);
     for (const keys in users) {
         if (req.body.email === users[keys].email &&
             bcrypt.compareSync(req.body.password, users[keys].password)) {
-            console.log(bcrypt.compareSync(req.body.password, users[keys].password));
             req.session.user_id = users[keys].id;
             res.redirect('/urls');
-        } else {
-            console.log('no'); 
-        }
+        } 
     }
-    res.send('no'); 
+    res.send('Incorrect email and/or password'); 
 });
 
 app.post("/logout", (req, res) => {
@@ -201,17 +190,15 @@ app.post("/logout", (req, res) => {
 
 app.post("/register", (req, res) => {
     if (!req.body.email || !req.body.password) {
-        console.log('empty string');
         res.status(400);
-        res.send('empty');  
+        res.send('Email and password cannot be blank');  
     }
 
     let newEmail = true; 
     for (const keys in users) {
         if (req.body.email === users[keys].email) {
-            console.log('same email'); 
             res.status(400); 
-            res.send('same email');
+            res.send('Email is already registered');
             newEmail = false;  
         }  
     }
@@ -223,7 +210,6 @@ app.post("/register", (req, res) => {
             users[randomUserId].id = randomUserId;
             users[randomUserId].email = req.body.email;
             users[randomUserId].password = hashed_password; 
-            console.log(users);
             req.session.user_id = randomUserId;
             res.redirect('/urls');
             }
