@@ -46,8 +46,8 @@ app.get("/urls", (req, res) => {
         urls: urlDatabase,
         username: req.cookies["user_id"],
         user: users};
-    console.log(templateVars.user);
-    console.log(req);
+    //console.log(templateVars.user);
+    //console.log(req);
     res.render('urls_index', templateVars);
 });
 
@@ -128,14 +128,29 @@ app.post("/logout", (req, res) => {
 });
 
 app.post("/user/register", (req, res) => {
-    let randomUserId = makeid(); 
-    users[randomUserId] = req.body;
-    users[randomUserId].id = randomUserId; 
-    res.cookie('user_id', randomUserId);  
-    console.log(users);
-    res.redirect('/urls');
-     
-});
+    if (!req.body.email || !req.body.password) {
+        console.log('empty string');
+        res.status(400);
+        res.send('empty');  
+    }
+
+    let newEmail = true; 
+    for (const keys in users) {
+        if (req.body.email === users[keys].email) {
+            console.log('same email'); 
+            res.status(400); 
+            res.send('same email');
+            newEmail = false;  
+        }  
+    }
+    if (newEmail === true) {
+            let randomUserId = makeid(); 
+            users[randomUserId] = req.body;
+            users[randomUserId].id = randomUserId; 
+            res.cookie('user_id', randomUserId);
+            res.redirect('/urls');
+            }
+    });     
 
 app.listen(PORT, () => {
     console.log(`Example app listening on port $(PORT)!`); 
