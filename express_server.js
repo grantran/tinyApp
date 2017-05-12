@@ -97,12 +97,24 @@ app.get('/urls/new', (req, res) => {
 
 app.get("/urls/:id", (req, res) => {
     let templateVars = { 
-        shortURL: req.params.id,
         urls: urlDatabase,
         username: req.session.user_id,
-        user: users};
+        user: users };
+    let short;
+    console.log(req.params.id); 
+    // console.log(req);
+    for (keys in urlDatabase) {
+        if (urlDatabase[keys].shortURL === req.params.id &&
+        keys === templateVars.username) {
+            res.render("urls_show", templateVars); 
+        } else if (urlDatabase[keys].shortURL === req.params.id) {
+            res.send('This URL does not belong to you');
+        } 
+    }
 
-  res.render("urls_show", templateVars);
+    res.send('Not a valid short URL');
+    // res.render("urls_show", templateVars);
+
 });
 
 app.get("/user/register", (req, res) => {
@@ -120,7 +132,7 @@ app.post("/urls", (req, res) => {
     let newLongURL = "http://" + req.body.longURL;
     urlDatabase[userEntry] = {id: userEntry, shortURL: randomS, 
         longURL: newLongURL };
-    //console.log(urlDatabase);
+    console.log(urlDatabase);
     res.redirect('/urls');
 });
 
@@ -133,8 +145,10 @@ app.get("/u/:shortURL", (req, res) => {
         if (req.params.shortURL === urlDatabase[keys].shortURL) {
                 realURL = urlDatabase[keys].longURL;
                 res.redirect(realURL); 
-            }
+        }
     }
+
+    res.send('Not a valid shortURL');
 });
 
 app.get("/login", (req, res) => {
@@ -148,8 +162,10 @@ app.get("/login", (req, res) => {
 
 app.post("/urls/:shortURL/update", (req, res) => {
     let username = req.session.user_id;
-    urlDatabase[username].longURL = req.body.newURL;
-    res.redirect('/urls');
+    if (username) {
+        urlDatabase[username].longURL = req.body.newURL;
+        res.redirect('/urls');
+    } 
 })
 
 app.post("/urls/:id/delete", (req, res) => {

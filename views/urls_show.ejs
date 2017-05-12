@@ -8,11 +8,15 @@
         <div> 
             <h1>This is urls_show</h1>
                 <ul> 
+                <% if (username) { %> 
                     <%= urls[username].longURL %> ---
-                    <%= shortURL %>
-                    <form method="POST" action="/urls/<%= shortURL %>/update">
+                    <%= urls[username].shortURL %>
+                    <form method="POST" action="/urls/<%= urls[username].shortURL %>/update">
                     New URL: <input type="text" name="newURL">
                     <input type="submit" value="UPDATE"></form>
+                <% } else { %>
+                    Please login to update URLs
+                <% } %>
                 </ul>
         </div>
     </main> 
