@@ -18,6 +18,16 @@ function makeid(){
     return text;
 }
 
+var urlsForUser = function urlsForUser(cookieinfo){
+    let usedUrls = {}
+    for (const keys in urlDatabase) {
+        if (keys === cookieinfo) {
+            usedUrls[keys] = urlDatabase[keys]; 
+        }
+    }
+    return usedUrls; 
+}
+
 let users = { 
   "userRandomID": {
     id: "userRandomID", 
@@ -51,9 +61,9 @@ app.get("/urls", (req, res) => {
     let templateVars = {
         urls: urlDatabase,
         username: req.cookies["user_id"],
-        user: users};
-    //console.log(templateVars.user);
-    //console.log(req);
+        user: users,
+        userUrls: urlsForUser(req.cookies.user_id) };
+    
     res.render('urls_index', templateVars);
 });
 
@@ -70,11 +80,12 @@ app.get('/urls/new', (req, res) => {
 });
 
 app.get("/urls/:id", (req, res) => {
-  let templateVars = { 
-      shortURL: req.params.id,
-      urls: urlDatabase,
-      username: req.cookies["user_id"],
-      user: users};
+    let templateVars = { 
+        shortURL: req.params.id,
+        urls: urlDatabase,
+        username: req.cookies["user_id"],
+        user: users};
+
   res.render("urls_show", templateVars);
 });
 
