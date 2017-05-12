@@ -8,14 +8,15 @@
         <div> 
             <h1>List of URLs</h1>
             <ul> 
-                <% for (const keys in userUrls) { %>
+                <% for (const keys in userUrls) { 
+                    for (i = 0; i < userUrls[keys].length; i++) { %>
                     <!--if (username === keys) { %>-->
-                    <li><%= userUrls[keys].shortURL %> - <%= userUrls[keys].longURL %>
+                    <li><%= userUrls[keys][i].shortURL %> - <%= userUrls[keys][i].longURL %>
                     <form method="POST" action="/urls/<%= keys %>/delete">
                     <input type="submit" value="DELETE"></form>
                     <form  action="/urls/<%= userUrls[keys].shortURL %>">
                     <input type="submit" value="EDIT"></form></li>
-                <% }; %> 
+                <% }}; %> 
             </ul>
             <a href="http://localhost:8080/urls/new"> Create New Short URL</a>
         </div>

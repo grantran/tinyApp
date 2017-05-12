@@ -52,14 +52,14 @@ let users = {
 }
 
 let urlDatabase = {
-    "testID": {
+    "testID": [{
         id: "testID",
         shortURL: "b2xVn2", 
-        longURL: "http://www.lighthouselabs.ca"},
-    "userRandomID": {
+        longURL: "http://www.lighthouselabs.ca"}],
+    "userRandomID": [{
         id: "userRandomID", 
         shortURL: "9sm5xK",
-        longURL: "http://www.google.com" }
+        longURL: "http://www.google.com" }]
 };
 
 app.get('/', (req, res) => {
@@ -100,8 +100,6 @@ app.get("/urls/:id", (req, res) => {
         urls: urlDatabase,
         username: req.session.user_id,
         user: users };
-    let short;
-    console.log(req.params.id); 
     for (keys in urlDatabase) {
         if (urlDatabase[keys].shortURL === req.params.id &&
         keys === templateVars.username) {
@@ -130,9 +128,24 @@ app.get("/register", (req, res) => {
 app.post("/urls", (req, res) => {
     let randomS = makeid();
     let userEntry = req.session.user_id;
-    let newLongURL = "http://" + req.body.longURL;
-    urlDatabase[userEntry] = {id: userEntry, shortURL: randomS, 
+    let newLongURL = "";
+    // need to check if user input includes protocol in URL
+    if (/^(http|https):\/\//.test(req.body.longURL)) {
+        newLongURL = req.body.longURL;
+    } else {
+        newLongURL = "http://" + req.body.longURL;
+    }
+    // store new URLs into object -- each user is a key
+    // each key is an array, where each element is another object
+    // pertaining to that specific URL 
+    let newUrlObj = {id: userEntry, shortURL: randomS, 
         longURL: newLongURL };
+
+    if (urlDatabase[userEntry]) {
+        urlDatabase[userEntry].push(newUrlObj);
+    } else {
+        urlDatabase[userEntry] = [newUrlObj]; 
+    }
     res.redirect('/urls');
 });
 
@@ -168,8 +181,8 @@ app.post("/urls/:shortURL/update", (req, res) => {
 })
 
 app.post("/urls/:id/delete", (req, res) => {
-  delete urlDatabase[req.params.id]; 
-  res.redirect('/urls');
+    delete urlDatabase[req.params.id]; 
+    res.redirect('/urls');
 });
 
 app.post("/login", (req, res) => {
