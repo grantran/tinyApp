@@ -96,7 +96,7 @@ app.get('/urls/new', (req, res) => {
 });
 
 app.get("/urls/:id", (req, res) => {
-    console.log(req.params.id);
+    // console.log(req.params.id);
     let templateVars = { 
         urls: urlDatabase,
         username: req.session.user_id,
@@ -105,11 +105,14 @@ app.get("/urls/:id", (req, res) => {
     
     for (const keys in urlDatabase) {
         for (let i = 0; i < urlDatabase[keys].length; i++){
-            console.log(urlDatabase[keys][i].shortURL);
+            // console.log(urlDatabase[keys][i].shortURL);
+            //check that ":id", the shortURL, exists in the database
+            //also make sure that this shortURL belongs to the user
             if (urlDatabase[keys][i].shortURL === req.params.id &&
             keys === templateVars.username) {
                 templateVars.shortURL = req.params.id; 
                 templateVars.longURL = urlDatabase[keys][i].longURL;
+                //passing index value for POST request when updating
                 templateVars.index = i;
                 res.render("urls_show", templateVars); 
             } else if (urlDatabase[keys][i].shortURL === req.params.id) {
@@ -155,20 +158,25 @@ app.post("/urls", (req, res) => {
     } else {
         urlDatabase[userEntry] = [newUrlObj]; 
     }
+    console.log(urlDatabase);
     res.redirect('/urls');
 });
 
 app.get("/u/:shortURL", (req, res) => {
     let realURL = ""; 
     for (const keys in urlDatabase) {
-        for (i = 0; i < urlDatabase[keys].length; i++) {
+        for (let i = 0; i < urlDatabase[keys].length; i++) {
             if (req.params.shortURL === urlDatabase[keys][i].shortURL) {
-                realURL = urlDatabase[keys][i].longURL;
+                if (/^(http|https):\/\//.test(urlDatabase[keys][i].longURL)) {
+                    realURL = urlDatabase[keys][i].longURL;
+                } else {
+                    realURL = "http://" + urlDatabase[keys][i].longURL;
+                }
                 res.redirect(realURL);
-                res.end(''); 
             }
         }
     }
+    console.log(urlDatabase);
     res.send('Not a valid shortURL');
 });
 
@@ -186,14 +194,15 @@ app.get("/login", (req, res) => {
 
 app.post("/urls/:shortURL/update", (req, res) => {
     let username = req.session.user_id;
-    console.log(req); 
-    console.log(req.body);
+    // console.log(req); 
+    // console.log(req.body);
     if (username) {
         for (const keys in urlDatabase) {
             for (let i = 0; i < urlDatabase[keys].length; i++) {
                 if (urlDatabase[keys][i].shortURL === req.params.shortURL) {
                     urlDatabase[keys][i].longURL = req.body.newURL;
                     res.redirect('/urls');
+                    console.log(urlDatabase);
                 }
             }
         }
