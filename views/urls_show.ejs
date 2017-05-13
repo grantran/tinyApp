@@ -9,9 +9,9 @@
             <h1>This is urls_show</h1>
                 <ul> 
                 <% if (username) { %> 
-                    <%= urls[username].longURL %> ---
-                    <%= urls[username].shortURL %>
-                    <form method="POST" action="/urls/<%= urls[username].shortURL %>/update">
+                    <%= longURL %> ---
+                    <%= shortURL %>
+                    <form method="POST" action="/urls/<%= urls[username][index].shortURL %>/update">
                     New URL: <input type="text" name="newURL">
                     <input type="submit" value="UPDATE"></form>
                 <% } else { %>

@@ -96,16 +96,25 @@ app.get('/urls/new', (req, res) => {
 });
 
 app.get("/urls/:id", (req, res) => {
+    console.log(req.params.id);
     let templateVars = { 
         urls: urlDatabase,
         username: req.session.user_id,
         user: users };
-    for (keys in urlDatabase) {
-        if (urlDatabase[keys].shortURL === req.params.id &&
-        keys === templateVars.username) {
-            res.render("urls_show", templateVars); 
-        } else if (urlDatabase[keys].shortURL === req.params.id) {
-            res.send('This URL does not belong to you');
+    
+    
+    for (const keys in urlDatabase) {
+        for (let i = 0; i < urlDatabase[keys].length; i++){
+            console.log(urlDatabase[keys][i].shortURL);
+            if (urlDatabase[keys][i].shortURL === req.params.id &&
+            keys === templateVars.username) {
+                templateVars.shortURL = req.params.id; 
+                templateVars.longURL = urlDatabase[keys][i].longURL;
+                templateVars.index = i;
+                res.render("urls_show", templateVars); 
+            } else if (urlDatabase[keys][i].shortURL === req.params.id) {
+                res.send('This URL does not belong to you');
+            }
         } 
     }
     res.send('Not a valid short URL');
@@ -152,9 +161,12 @@ app.post("/urls", (req, res) => {
 app.get("/u/:shortURL", (req, res) => {
     let realURL = ""; 
     for (const keys in urlDatabase) {
-        if (req.params.shortURL === urlDatabase[keys].shortURL) {
-                realURL = urlDatabase[keys].longURL;
-                res.redirect(realURL); 
+        for (i = 0; i < urlDatabase[keys].length; i++) {
+            if (req.params.shortURL === urlDatabase[keys][i].shortURL) {
+                realURL = urlDatabase[keys][i].longURL;
+                res.redirect(realURL);
+                res.end(''); 
+            }
         }
     }
     res.send('Not a valid shortURL');
@@ -174,14 +186,27 @@ app.get("/login", (req, res) => {
 
 app.post("/urls/:shortURL/update", (req, res) => {
     let username = req.session.user_id;
+    console.log(req); 
+    console.log(req.body);
     if (username) {
-        urlDatabase[username].longURL = req.body.newURL;
-        res.redirect('/urls');
+        for (const keys in urlDatabase) {
+            for (let i = 0; i < urlDatabase[keys].length; i++) {
+                if (urlDatabase[keys][i].shortURL === req.params.shortURL) {
+                    urlDatabase[keys][i].longURL = req.body.newURL;
+                    res.redirect('/urls');
+                }
+            }
+        }
     } 
-})
+});
 
 app.post("/urls/:id/delete", (req, res) => {
-    delete urlDatabase[req.params.id]; 
+    let username = req.session.user_id;
+    for (i = 0; i < urlDatabase[username].length; i++) {
+        if (urlDatabase[username][i].shortURL === req.params.id) {
+            urlDatabase[username].splice(i, 1);
+        }
+    }
     res.redirect('/urls');
 });
 
