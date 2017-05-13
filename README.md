@@ -17,6 +17,7 @@ Users are able to register their own account and request shortened URLs for diff
 - bcrypt 
 - body-parser
 - cookie-parser
+- cookie-session
 
 ## Getting Started 
 
