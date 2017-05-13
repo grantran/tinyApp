@@ -92,11 +92,11 @@ app.get("/urls/:id", (req, res) => {
                 templateVars.index = i;
                 res.render("urls_show", templateVars); 
             } else if (urlDatabase[keys][i].shortURL === req.params.id) {
-                res.send('This URL does not belong to you');
+                res.send('This URL does not belong to you, please <a href="http://localhost:8080/login">Login</a>');
             }
         } 
     }
-    res.send('Not a valid short URL');
+    res.send('Not a valid short URL. Go back to <a href="http://localhost:8080/urls">URL List</a>');
 });
 
 app.get("/register", (req, res) => {
@@ -150,7 +150,7 @@ app.get("/u/:shortURL", (req, res) => {
             }
         }
     }
-    res.send('Not a valid shortURL');
+    res.send('Not a valid short URL. Go back to <a href="http://localhost:8080/urls">URL List</a>');
 });
 
 app.get("/login", (req, res) => {
@@ -200,7 +200,7 @@ app.post("/login", (req, res) => {
             res.redirect('/urls');
         } 
     }
-    res.send('Incorrect email and/or password'); 
+    res.send('Incorrect email and/or password. <a href="http://localhost:8080/login">Login</a>'); 
 });
 
 app.post("/logout", (req, res) => {
@@ -211,14 +211,15 @@ app.post("/logout", (req, res) => {
 app.post("/register", (req, res) => {
     if (!req.body.email || !req.body.password) {
         res.status(400);
-        res.send('Email and password cannot be blank');  
+        res.send('Email and password cannot be blank. <a href="http://localhost:8080/register">Register</a>');  
     }
 
     let newEmail = true; 
     for (const keys in users) {
         if (req.body.email === users[keys].email) {
+            newEmail = false;  
             res.status(400); 
-            res.send('Email is already registered');
+            res.send('Email is already registered. <a href="http://localhost:8080/register">Register</a>');
             newEmail = false;  
         }  
     }
