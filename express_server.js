@@ -141,6 +141,8 @@ app.get("/u/:shortURL", (req, res) => {
     for (const keys in urlDatabase) {
         for (let i = 0; i < urlDatabase[keys].length; i++) {
             if (req.params.shortURL === urlDatabase[keys][i].shortURL) {
+                // this is the same regex as the one when adding a URL
+                // a bit redundant b/c the same check is done when a user updates
                 if (/^(http|https):\/\//.test(urlDatabase[keys][i].longURL)) {
                     realURL = urlDatabase[keys][i].longURL;
                 } else {
@@ -172,6 +174,7 @@ app.post("/urls/:shortURL/update", (req, res) => {
         for (const keys in urlDatabase) {
             for (let i = 0; i < urlDatabase[keys].length; i++) {
                 if (urlDatabase[keys][i].shortURL === req.params.shortURL) {
+                    // same regex as the one when adding a new URL
                     if (/^(http|https):\/\//.test(req.body.newURL)) {
                     urlDatabase[keys][i].longURL = req.body.newUR;
                     } else {
