@@ -1,24 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <% include partials/_header %>
-</head>
+    <head>
+        <% include partials/_header %>
+    </head>
 <body>
-    <main>  
-        <div> 
-            <h1>This is urls_show</h1>
-                <ul> 
-                <% if (username) { %> 
-                    <%= longURL %> ---
-                    <%= shortURL %>
-                    <form method="POST" action="/urls/<%= urls[username][index].shortURL %>/update">
-                    New URL: <input type="text" name="newURL">
-                    <input type="submit" value="UPDATE"></form>
-                <% } else { %>
-                    Please login to update URLs
-                <% } %>
-                </ul>
-        </div>
-    </main> 
+<main>  
+    <div> 
+        <h1>Update your URL</h1>
+            <ul> 
+            <% if (username) { %> 
+                <%= longURL %> ---
+                <%= shortURL %>
+                <form method="POST" action="/urls/<%= urls[username][index].shortURL %>/update">
+                New URL: <input type="text" name="newURL">
+                <input type="submit" value="UPDATE"></form>
+            <% } else { %>
+                Please login or register to update URLs
+                <a href="http://localhost:8080/login">Login</a>
+				<a href="http://localhost:8080/register">Register</a>
+            <% } %>
+            </ul>
+    </div>
+</main> 
 </body>
 </html>

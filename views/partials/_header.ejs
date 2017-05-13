@@ -1,8 +1,8 @@
-<nav class="navbar navbar-default" role="navigation">
-	<div class="container-fluid">
-		<div class="navbar-header">
+<!DOCTYPE html>
+<html lang="en">
+		<div>
 			<% if (username) { %>
-        <%=  user[username].email %>
+        Currently logged in as: <b> <%=  user[username].email %> </b>
         <form method="POST" action="/logout">
         <input type="submit" value="LOGOUT"></form>
       <% } else { %> 
@@ -10,6 +10,4 @@
 					<a href="http://localhost:8080/register">Register</a>
       <% } %>              
 		</div>
-	  
-	</div>
-</nav>
+</html>

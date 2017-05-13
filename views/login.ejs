@@ -5,16 +5,17 @@
 </head>
 <body>
 <main>
-  <div class="navbar-header">
+  <div>
+      <br></br>
 			<% if (username) { %>
         <%=  user.users.id %>
         <form method="POST" action="/logout">
         <input type="submit" value="LOGOUT"></form>
       <% } else { %> 
 			  <form method="POST" action="/login">
-                    email: <input type="email" name="email">
-                    password: <input type="password" name= "password">
-                    <input type="submit" value="LOGIN"></form>
+            email: <input type="email" name="email">
+            password: <input type="password" name= "password">
+            <input type="submit" value="LOGIN"></form>
       <% } %>              
 	</div>
 </main>

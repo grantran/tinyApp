@@ -4,22 +4,25 @@
     <% include partials/_header %>
 </head>
 <body>
-    <main> 
-        <div> 
-            <h1>List of URLs</h1>
-            <ul> 
-                <% for (const keys in userUrls) { 
+<main> 
+    <div> 
+        <ul> 
+            <% if (username) {
+                for (const keys in userUrls) { 
                     for (i = 0; i < userUrls[keys].length; i++) { %>
-                    <!--if (username === keys) { %>-->
-                    <li><%= userUrls[keys][i].shortURL %> - <%= userUrls[keys][i].longURL %>
-                    <form method="POST" action="/urls/<%= userUrls[keys][i].shortURL %>/delete">
-                    <input type="submit" value="DELETE"></form>
-                    <form  action="/urls/<%= userUrls[keys][i].shortURL %>">
-                    <input type="submit" value="EDIT"></form></li>
-                <% }}; %> 
-            </ul>
-            <a href="http://localhost:8080/urls/new"> Create New Short URL</a>
-        </div>
-    </main> 
+                        <li><%= userUrls[keys][i].shortURL %> - <%= userUrls[keys][i].longURL %>
+                        <form method="POST" action="/urls/<%= userUrls[keys][i].shortURL %>/delete">
+                        <input type="submit" value="DELETE"></form>
+                        <form  action="/urls/<%= userUrls[keys][i].shortURL %>">
+                        <input type="submit" value="EDIT"></form></li>
+            <% }} %>
+                <br> </br>
+                <a href="http://localhost:8080/urls/new"> Create New Short URL</a>
+            <% } else { %>
+                Please log-in to see your URLs and make new ones. 
+            <% } %> 
+        </ul>          
+    </div>
+</main> 
 </body>
 </html>
