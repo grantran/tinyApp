@@ -15,58 +15,33 @@ app.use(cookieSession({
     keys: ['key1', 'key2']
 }));
 
-function makeid(){
-    var text = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    for( var i=0; i < 5; i++ )
+let makeid = function makeid(){
+    let text = "";
+    const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    for( let i = 0; i < 5; i++ )
         text += possible.charAt(Math.floor(Math.random() * possible.length));
     return text;
-}
+};
 
-var urlsForUser = function urlsForUser(cookieinfo){
-    let usedUrls = {}
+let urlsForUser = function urlsForUser(cookieinfo){
+    let usedUrls = {};
     for (const keys in urlDatabase) {
         if (keys === cookieinfo) {
             usedUrls[keys] = urlDatabase[keys]; 
         }
     }
     return usedUrls; 
-}
-
-let users = { 
-//   "userRandomID": {
-//     id: "userRandomID", 
-//     email: "user@example.com", 
-//     password: "purple-monkey-dinosaur"
-//   },
-//  "user2RandomID": {
-//     id: "user2RandomID", 
-//     email: "user2@example.com", 
-//     password: "dishwasher-funk"
-//   }, 
-//   "test": {
-//       id: "testID", 
-//       email: "asdf@asdf", 
-//       password: "asdf"
-//   }
-}
-
-let urlDatabase = {
-    "testID": [{
-        id: "testID",
-        shortURL: "b2xVn2", 
-        longURL: "http://www.lighthouselabs.ca"}],
-    "userRandomID": [{
-        id: "userRandomID", 
-        shortURL: "9sm5xK",
-        longURL: "http://www.google.com" }]
 };
+
+let users = {};
+let urlDatabase = {};
 
 app.get('/', (req, res) => {
     let templateVars = {
         urls: urlDatabase,
         username: req.session.user_id,
-        user: users};
+        user: users
+    };
     if (templateVars.username) {
         res.redirect('/urls');
     } else {
@@ -79,7 +54,8 @@ app.get("/urls", (req, res) => {
         urls: urlDatabase,
         username: req.session.user_id,
         user: users,
-        userUrls: urlsForUser(req.session.user_id) };   
+        userUrls: urlsForUser(req.session.user_id) 
+    };   
     res.render('urls_index', templateVars);
 });
 
@@ -87,7 +63,8 @@ app.get('/urls/new', (req, res) => {
     let templateVars = {
         urls: urlDatabase,
         username: req.session.user_id,
-        user: users};
+        user: users 
+    };
     if (templateVars.username) {
         res.render('urls_new', templateVars);
     } else {
@@ -96,16 +73,15 @@ app.get('/urls/new', (req, res) => {
 });
 
 app.get("/urls/:id", (req, res) => {
-    // console.log(req.params.id);
     let templateVars = { 
         urls: urlDatabase,
         username: req.session.user_id,
-        user: users };
+        user: users 
+    };
     
     
     for (const keys in urlDatabase) {
         for (let i = 0; i < urlDatabase[keys].length; i++){
-            // console.log(urlDatabase[keys][i].shortURL);
             //check that ":id", the shortURL, exists in the database
             //also make sure that this shortURL belongs to the user
             if (urlDatabase[keys][i].shortURL === req.params.id &&
@@ -121,15 +97,14 @@ app.get("/urls/:id", (req, res) => {
         } 
     }
     res.send('Not a valid short URL');
-
-
 });
 
 app.get("/register", (req, res) => {
     let templateVars = { 
         urls: urlDatabase,
         username: req.session.user_id,
-        user: users };
+        user: users 
+    };
     if (templateVars.username) {
         res.redirect('/');
     } else {
@@ -158,7 +133,6 @@ app.post("/urls", (req, res) => {
     } else {
         urlDatabase[userEntry] = [newUrlObj]; 
     }
-    console.log(urlDatabase);
     res.redirect('/urls');
 });
 
@@ -176,7 +150,6 @@ app.get("/u/:shortURL", (req, res) => {
             }
         }
     }
-    console.log(urlDatabase);
     res.send('Not a valid shortURL');
 });
 
@@ -184,7 +157,8 @@ app.get("/login", (req, res) => {
     let templateVars = { 
         urls: urlDatabase,
         username: req.session.user_id,
-        user: users };
+        user: users 
+    };
     if (templateVars.username) {
         res.redirect('/');
     } else {
@@ -194,15 +168,12 @@ app.get("/login", (req, res) => {
 
 app.post("/urls/:shortURL/update", (req, res) => {
     let username = req.session.user_id;
-    // console.log(req); 
-    // console.log(req.body);
     if (username) {
         for (const keys in urlDatabase) {
             for (let i = 0; i < urlDatabase[keys].length; i++) {
                 if (urlDatabase[keys][i].shortURL === req.params.shortURL) {
                     urlDatabase[keys][i].longURL = req.body.newURL;
                     res.redirect('/urls');
-                    console.log(urlDatabase);
                 }
             }
         }
@@ -213,6 +184,8 @@ app.post("/urls/:id/delete", (req, res) => {
     let username = req.session.user_id;
     for (i = 0; i < urlDatabase[username].length; i++) {
         if (urlDatabase[username][i].shortURL === req.params.id) {
+            // used splice here b/c each user (key) has an array (value)
+            // delete won't remove the array element
             urlDatabase[username].splice(i, 1);
         }
     }
@@ -250,16 +223,16 @@ app.post("/register", (req, res) => {
         }  
     }
     if (newEmail === true) {
-            const randomUserId = makeid();
-            const password = req.body.password;
-            const hashed_password = bcrypt.hashSync(password, 10);
-            users[randomUserId] = {};   
-            users[randomUserId].id = randomUserId;
-            users[randomUserId].email = req.body.email;
-            users[randomUserId].password = hashed_password; 
-            req.session.user_id = randomUserId;
-            res.redirect('/urls');
-            }
+        const randomUserId = makeid();
+        const password = req.body.password;
+        const hashed_password = bcrypt.hashSync(password, 10);
+        users[randomUserId] = {};   
+        users[randomUserId].id = randomUserId;
+        users[randomUserId].email = req.body.email;
+        users[randomUserId].password = hashed_password; 
+        req.session.user_id = randomUserId;
+        res.redirect('/urls');
+        }
     });     
 
 app.listen(PORT, () => {
