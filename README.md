@@ -5,7 +5,9 @@ This application takes a long URL, assign it a randomly generated 6 character ta
 Users are able to register their own account and request shortened URLs for different URLs. URLs are user-specific, and shortened URLs can be used by everyone. 
 
 ## Final Product 
-
+!["Screenshot of user-specific URL list](https://github.com/grantran/tinyApp/blob/master/docs/url-list.png)
+!["Screenshot of the page to add a new URL](https://github.com/grantran/tinyApp/blob/master/docs/new-url.png)
+!["Screenshot of updating an exisiting URL](https://github.com/grantran/tinyApp/blob/master/docs/update-url.png)
 
 ## Dependencies 
 
