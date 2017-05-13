@@ -172,12 +172,16 @@ app.post("/urls/:shortURL/update", (req, res) => {
         for (const keys in urlDatabase) {
             for (let i = 0; i < urlDatabase[keys].length; i++) {
                 if (urlDatabase[keys][i].shortURL === req.params.shortURL) {
-                    urlDatabase[keys][i].longURL = req.body.newURL;
-                    res.redirect('/urls');
+                    if (/^(http|https):\/\//.test(req.body.newURL)) {
+                    urlDatabase[keys][i].longURL = req.body.newUR;
+                    } else {
+                    urlDatabase[keys][i].longURL = "http://" + req.body.newURL;
+                    }
                 }
             }
         }
-    } 
+    }
+    res.redirect('/urls') 
 });
 
 app.post("/urls/:id/delete", (req, res) => {
